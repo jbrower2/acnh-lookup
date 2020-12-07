@@ -7,6 +7,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
 
 import * as rawData from "./all-data.json";
@@ -95,7 +96,7 @@ const Search = () => {
 
   return (
     <>
-      <input type="text" onChange={performSearch} />
+      <TextField label="Search" onChange={performSearch} />
       {filtered && (
         <TableContainer component={Paper}>
           <Table className="results-table">
