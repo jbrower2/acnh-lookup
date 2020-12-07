@@ -44,13 +44,11 @@ type Record = {
 
 const recordsById = new Map<string, Record[]>();
 (rawData as DataFile).data.forEach((record) => {
-  const byId =
-    recordsById.get(record.internalId) ||
-    (() => {
-      const temp: Record[] = [];
-      recordsById.set(record.internalId, temp);
-      return temp;
-    })();
+  let byId = recordsById.get(record.internalId);
+  if (!byId) {
+    byId = [];
+    recordsById.set(record.internalId, byId);
+  }
   byId.push(record);
   record.imageUrl = `https://acnhcdn.com/latest/FtrIcon/${record.filename}.png`;
   record.lowerName = record.name.toLowerCase();
@@ -66,7 +64,7 @@ const Search = () => {
   );
 
   const performSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value.trim().toLowerCase().replace(/\s+/, " ");
+    const query = e.target.value.trim().toLowerCase().replace(/\s+/g, " ");
     if (!query) {
       setFiltered(undefined);
       return;
