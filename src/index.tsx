@@ -37,7 +37,9 @@ type Record = {
   filename: string;
   internalId: string;
   variantId: string;
-  imageUrl?: string;
+  imageUrl: string;
+  lowerName: string;
+  spaceName: string;
 };
 
 const recordsById = new Map<string, Record[]>();
@@ -50,11 +52,9 @@ const recordsById = new Map<string, Record[]>();
       return temp;
     })();
   byId.push(record);
-  switch (record.itemType) {
-    default:
-      record.imageUrl = `https://acnhcdn.com/latest/FtrIcon/${record.filename}.png`;
-      break;
-  }
+  record.imageUrl = `https://acnhcdn.com/latest/FtrIcon/${record.filename}.png`;
+  record.lowerName = record.name.toLowerCase();
+  record.spaceName = ` ${record.lowerName} `;
 });
 
 const unique: Record[] = [];
@@ -66,24 +66,30 @@ const Search = () => {
   );
 
   const performSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value.toLowerCase();
+    const query = e.target.value.trim().toLowerCase().replace(/\s+/, " ");
     if (!query) {
       setFiltered(undefined);
       return;
     }
+    const queryWithSpaces = ` ${query} `;
     let filtered = unique.filter((record) =>
-      record.name.toLowerCase().includes(query)
+      record.spaceName.includes(queryWithSpaces)
     );
+    if (!filtered.length)
+      filtered = unique.filter((record) => record.lowerName.includes(query));
     if (!filtered.length) {
       filtered = unique.filter((record) => {
-        const name = record.name.toLowerCase();
-        let j = 0;
-        for (let i = 0; i < name.length && j < query.length; i++) {
-          if (name[i] === query[j]) {
-            j++;
+        let queryIndex = 0;
+        for (
+          let nameIndex = 0;
+          nameIndex < record.lowerName.length && queryIndex < query.length;
+          nameIndex++
+        ) {
+          if (record.lowerName[nameIndex] === query[queryIndex]) {
+            queryIndex++;
           }
         }
-        return j === query.length;
+        return queryIndex === query.length;
       });
     }
     setFiltered(filtered.slice(0, 50));
