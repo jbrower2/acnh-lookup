@@ -11,7 +11,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: "Omni",
+      title: "ACNH Item Lookup",
     }),
   ],
   devServer: {
