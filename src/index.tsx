@@ -64,6 +64,13 @@ const Search = () => {
     undefined as undefined | Record[]
   );
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Escape") {
+      (e.target as HTMLInputElement).value = "";
+      setFiltered(undefined);
+    }
+  };
+
   const performSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.trim().toLowerCase().replace(/\s+/g, " ");
     if (!query) {
@@ -96,7 +103,11 @@ const Search = () => {
 
   return (
     <>
-      <TextField label="Search" onChange={performSearch} />
+      <TextField
+        label="Search"
+        onKeyDown={handleKeyDown}
+        onChange={performSearch}
+      />
       {filtered && (
         <TableContainer component={Paper}>
           <Table className="results-table">
